@@ -26,13 +26,13 @@ contract balencerPoolTokenValue{
         BpoolContract = InterfaceBPool(_address);
     }
     
-    function getPoolTokens() internal pure returns(address[] memory){
+    function getPoolTokens() internal view returns(address[] memory){
         //getting the current tokens of the pool
         return(BpoolContract.getCurrentTokens());
     }
     
     //proportions (useless)
-    function getTokenPercentage(address _tokenAddress) internal pure returns(uint){
+    function getTokenPercentage(address _tokenAddress) internal view returns(uint){
         return(BpoolContract.getNormalizedWeight(_tokenAddress));
     }
     
@@ -43,18 +43,19 @@ contract balencerPoolTokenValue{
     
     
     //combiens ils valent
-    function getWeiValue(address _tokenAddress) internal pure returns(uint){
+    function getWeiValue(address _tokenAddress) internal view returns(uint){
         return(BpoolContract.getSpotPrice(_tokenAddress, wETHaddess));
     }
     
     
     //le nombre total de tokens
-    function getTotalSupply() internal view returns(uint){
+    /*function getTotalSupply() internal view returns(uint){
         return(BpoolContract.totalSupply());
     }
+    */
     
     
-    function getPoolWeiValue() public view returns(uint){
+    function getPoolWeiValue() public returns(uint){
         uint poolWeiValue = 0;
         currentTokens = getPoolTokens();
         for(uint i=0; i<currentTokens.length; i++){
@@ -67,10 +68,11 @@ contract balencerPoolTokenValue{
     }
     
     
-    function getBtokenWeiValue() internal view returns(uint){
+    /*function getBtokenWeiValue() internal view returns(uint){
         uint tokenValue = getPoolWeiValue()/getTotalSupply();
         return(tokenValue);
     }
+    */
     
     //how to imort properly a contract????!!!!!!!!
     
