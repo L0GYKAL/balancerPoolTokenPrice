@@ -1,7 +1,7 @@
-pragma solidity >0.6.6;
+pragma solidity 0.5.12;
 
 
-
+import "./BPool.sol";
 //maybe import and use safemaths
 
 contract balencerPoolTokenValue{
@@ -9,8 +9,8 @@ contract balencerPoolTokenValue{
     uint public weiValue;
     mapping (address => uint256) internal tokenNumbers;
     mapping (address => uint256) internal tokenWeiValues;
-        address[] internal currentTokens;
-    InterfaceBPool internal BpoolContract;
+    address[] internal currentTokens;
+    BPool BpoolContract;
 
     
     address constant wETHaddess = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
@@ -18,12 +18,12 @@ contract balencerPoolTokenValue{
     
     constructor(address _BtokenAddress) public{
         BtokenAddress = _BtokenAddress;
-        BpoolContract = InterfaceBPool(_BtokenAddress);
+        BpoolContract = BPool(_BtokenAddress);
         
     }
     
     function setPoolContractAddress(address _address) external {
-        BpoolContract = InterfaceBPool(_address);
+        BpoolContract = BPool(_address);
     }
     
     function getPoolTokens() internal view returns(address[] memory){
@@ -31,10 +31,6 @@ contract balencerPoolTokenValue{
         return(BpoolContract.getCurrentTokens());
     }
     
-    //proportions (useless)
-    function getTokenPercentage(address _tokenAddress) internal view returns(uint){
-        return(BpoolContract.getNormalizedWeight(_tokenAddress));
-    }
     
     //How many tokens in the Pool
     function getTokenBalance(address _tokenAddress) view internal returns(uint){
@@ -49,10 +45,25 @@ contract balencerPoolTokenValue{
     
     
     //le nombre total de tokens
-    /*function getTotalSupply() internal view returns(uint){
+    function getTotalSupply() internal view returns(uint){
         return(BpoolContract.totalSupply());
     }
-    */
+    
+    
+    //tokens getSpotPrice
+    function requestEthereumPrice(bytes32 _jobId, string _currency) public returns (bytes32 requestId) {
+  // newRequest takes a JobID, a callback address, and callback function as input
+  Chainlink.Request memory req = buildChainlinkRequest(_jobId, address(this), this.fulfillEthereumPrice.selector);
+  // Adds a URL with the key "get" to the request parameters
+  req.add("get", "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,JPY");
+  // Uses input param (dot-delimited string) as the "path" in the request parameters
+  req.add("path", _currency);
+  // Adds an integer with the key "times" to the request parameters
+  req.addInt("times", 100);
+  // Sends the request with 1 LINK to the oracle contract
+  requestId = sendChainlinkRequest(req, 1 * LINK);
+    }
+    
     
     
     function getPoolWeiValue() public returns(uint){
@@ -68,17 +79,17 @@ contract balencerPoolTokenValue{
     }
     
     
-    /*function getBtokenWeiValue() internal view returns(uint){
+    function getBtokenWeiValue() internal returns(uint){
         uint tokenValue = getPoolWeiValue()/getTotalSupply();
         return(tokenValue);
     }
-    */
     
-    //how to imort properly a contract????!!!!!!!!
+    
+
     
 }
 
-interface InterfaceBPool{
+/*interface InterfaceBPool{
     function getCurrentTokens()
         external view
         returns (address[] memory tokens);
@@ -92,4 +103,4 @@ interface InterfaceBPool{
         external view //_viewlock_ ?????
         returns (uint);
     
-} 
+} */
