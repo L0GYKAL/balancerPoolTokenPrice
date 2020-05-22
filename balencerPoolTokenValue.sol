@@ -50,7 +50,7 @@ contract balencerPoolTokenValue{
     }
     
     
-    //tokens getSpotPrice
+    /*//tokens getSpotPrice
     function requestEthereumPrice(bytes32 _jobId, string _currency) public returns (bytes32 requestId) {
   // newRequest takes a JobID, a callback address, and callback function as input
   Chainlink.Request memory req = buildChainlinkRequest(_jobId, address(this), this.fulfillEthereumPrice.selector);
@@ -62,7 +62,7 @@ contract balencerPoolTokenValue{
   req.addInt("times", 100);
   // Sends the request with 1 LINK to the oracle contract
   requestId = sendChainlinkRequest(req, 1 * LINK);
-    }
+    }*/
     
     
     
